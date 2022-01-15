@@ -1,16 +1,18 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import styles from "./PaginationComponent.module.css";
 interface PaginationProps {
 	pageCount: number;
 	activePage: number;
 	changePageNumber: (activePage: number) => void;
 }
 const PaginationComponent: FC<PaginationProps> = (props) => {
+
 	const [pageNumbers, setPageNumbers] = useState<number[]>([]);
+
 	useEffect(() => {
 		setPages();
 	}, [props.pageCount]);
+
 	const setPages = () => {
 		if (props.pageCount > 0) {
 			const pages: number[] = [];
@@ -26,9 +28,11 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 			setPageNumbers(pages);
 		}
 	};
+
 	const onPageChange = (page: number) => {
 		props.changePageNumber(page);
 	};
+
 	const onNextPage = () => {
 		if (props.activePage + 1 <= props.pageCount) {
 			if (props.activePage + 1 > pageNumbers[pageNumbers.length - 1]) {
@@ -40,6 +44,7 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 			props.changePageNumber(props.activePage + 1);
 		}
 	};
+
 	const onPreviousPage = () => {
 		if (props.activePage - 1 >= 0) {
 			if (props.activePage - 1 < pageNumbers[0]) {
@@ -51,10 +56,12 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 			props.changePageNumber(props.activePage - 1);
 		}
 	};
+
 	const onFirstPage = () => {
 		setPages();
 		props.changePageNumber(1);
 	};
+
 	const onLastPage = () => {
 		let count = props.pageCount;
 		if (count > 5) {
@@ -67,27 +74,29 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 		}
 		props.changePageNumber(props.pageCount);
 	};
+
 	return (
 		<Pagination>
-			{props.pageCount > 5 && (
-				<Pagination.First onClick={onFirstPage} />
-			)}
-			{props.pageCount > 5 && (
-				<Pagination.Prev onClick={onPreviousPage} />
-			)}
-			{pageNumbers.map((item: number) => (
+			{ props.pageCount > 5 && (
+				<Pagination.First onClick={ onFirstPage } />
+			) }
+			{ props.pageCount > 5 && (
+				<Pagination.Prev onClick={ onPreviousPage } />
+			) }
+			{ pageNumbers.map((item: number) => (
 				<Pagination.Item
-					key={item}
-					active={item === props.activePage}
-					onClick={(e) => {
+					key={ item }
+					active={ item === props.activePage }
+					onClick={ (e) => {
 						onPageChange(item);
-					}}>
-					{item}
+					} }>
+					{ item }
 				</Pagination.Item>
-			))}
-			{props.pageCount > 5 && <Pagination.Next onClick={onNextPage} />}
-			{props.pageCount > 5 && <Pagination.Last onClick={onLastPage} />}
+			)) }
+			{ props.pageCount > 5 && <Pagination.Next onClick={ onNextPage } /> }
+			{ props.pageCount > 5 && <Pagination.Last onClick={ onLastPage } /> }
 		</Pagination>
 	);
 };
+
 export default PaginationComponent;

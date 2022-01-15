@@ -62,10 +62,8 @@ const DashBoard = () => {
 
 	useEffect(() => {
 		if (searchOption.length > 0 && searchValue.length > 0) {
-			console.log("if");
 			setSearchFilter();
 		} else {
-			console.log("else");
 			setCurrentBanks(bankLists);
 		}
 	}, [bankLists]);
@@ -89,10 +87,13 @@ const DashBoard = () => {
 		<>
 			<main className={styles.DashBoard}>
 				<header className={styles.flex}>
-					<div className="Heading"> Find Your Bank</div>
+					<div className={styles.Heading}>
+						{" "}
+						<h2>Find Your Bank</h2>
+					</div>
 					<div className={styles.flex}>
 						<div className="cityFilter">
-							<label id="city">Select City</label>
+							<label id="city">SelectCity</label>
 							<Form.Select
 								aria-label="Default select example"
 								onChange={(e) => {
@@ -107,7 +108,7 @@ const DashBoard = () => {
 						</div>
 						<div className="searchFilter">
 							<label id="searchOptions">
-								Select Search Options
+								SelectSearchOptions
 							</label>
 							<MultiSelect
 								options={searchOptions}
@@ -122,6 +123,7 @@ const DashBoard = () => {
 								Search{" "}
 							</label>
 							<input
+								className={styles.searchInput}
 								type="text"
 								id="searchValue"
 								placeholder="Search..."

@@ -4,8 +4,10 @@ import { BankDetails } from "../../Models/BankDetailsInterface";
 import { BanksListProps } from "../../Models/Props";
 import PaginationComponent from "../PaginationComponent/PaginationComponent";
 import styles from "./BanksList.module.css";
+import { useNavigate } from "react-router-dom";
 const BanksList: React.FC<BanksListProps> = ({ banks }: BanksListProps) => {
 	var headerKeys: string[] = [];
+	const navigate = useNavigate();
 	const [activePage, setActivePage] = useState(1);
 	const [paginatedRecords, setPaginatedRecords] =
 		useState<BankDetails[]>(banks);
@@ -25,6 +27,11 @@ const BanksList: React.FC<BanksListProps> = ({ banks }: BanksListProps) => {
 		setPaginatedRecords(records);
 		setActivePage(activePage);
 	};
+
+	const goToBank = (ifsc: String, bank: any) => {
+		navigate(`/bank-details/${ifsc}`, { state: bank });
+	};
+
 	return (
 		<div>
 			{paginatedRecords.length === 0 && <h2>No Data Found</h2>}
@@ -38,13 +45,17 @@ const BanksList: React.FC<BanksListProps> = ({ banks }: BanksListProps) => {
 				</thead>
 				<tbody>
 					{paginatedRecords.map((bank: any, index: number) => (
-						<tr key={index}>
+						<tr
+							onClick={() => goToBank(bank["ifsc"], bank)}
+							key={index}>
 							{headerKeys.map((key: string, index) =>
-								key == "address" ? (
+								key === "address" ? (
 									<td
 										key={index + key}
 										className={styles.address}
-										style={{ width: "150px" }}>
+										style={{
+											width: "150px",
+										}}>
 										{bank[headerKeys[index]]}
 									</td>
 								) : (
@@ -55,7 +66,6 @@ const BanksList: React.FC<BanksListProps> = ({ banks }: BanksListProps) => {
 							)}
 						</tr>
 					))}
-					<tr></tr>
 				</tbody>
 			</Table>
 			<PaginationComponent
