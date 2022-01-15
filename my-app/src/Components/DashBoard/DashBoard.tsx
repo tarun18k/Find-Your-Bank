@@ -10,7 +10,10 @@ const DashBoard = () => {
 	const [bankLists, setBankLists] = useState([]);
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
-	const [searchOption, setSerachOption] = useState([]);
+	const [searchOption, setSearchOption] = useState([]);
+	const [currentBanks, setCurrentBanks] = useState([]);
+	const [searchValue, setSearchValue] = useState("");
+	var cityChanged = true;
 	const searchOptions = [
 		{
 			label: "IFSC",
@@ -27,21 +30,29 @@ const DashBoard = () => {
 	];
 
 	useEffect(() => {
-		console.log(city);
 		fetchBanks(city);
 	}, [city]);
+
+	useEffect(() => {
+		setSearchFilter();
+	}, [searchOption, searchValue]);
 
 	const changeOption = (e: any) => {
 		setCity(e.target.value);
 	};
+
+	const changeSearchValue = (e: any) => {
+		setSearchValue(e.target.value);
+	};
+
 	const fetchBanks = (city: string) => {
+		console.log(city);
 		fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + city)
 			.then((res) => res.json())
 			.then(
 				(data) => {
 					setIsLoaded(true);
 					setBankLists(data);
-					console.log(data);
 				},
 				(error) => {
 					setIsLoaded(true);
@@ -49,9 +60,32 @@ const DashBoard = () => {
 				}
 			);
 	};
-	const setSearchFilter = (e: any) => {
-		console.log(e.target.value);
+
+	useEffect(() => {
+		if (searchOption.length > 0 && searchValue.length > 0) {
+			console.log("if");
+			setSearchFilter();
+		} else {
+			console.log("else");
+			setCurrentBanks(bankLists);
+		}
+	}, [bankLists]);
+
+	const setSearchFilter = () => {
+		var result: any = [];
+		bankLists.forEach((bank) => {
+			searchOptions.forEach((searchKey: any) => {
+				if (bank[searchKey.value] === searchValue) {
+					result.push(bank);
+				}
+			});
+		});
+		if (searchOption.length === 0 || searchValue.length === 0) {
+			result = bankLists;
+		}
+		setCurrentBanks(result);
 	};
+
 	return (
 		<main className={styles.DashBoard}>
 			<header className={styles.flex}>
@@ -76,7 +110,7 @@ const DashBoard = () => {
 						<MultiSelect
 							options={searchOptions}
 							value={searchOption}
-							onChange={setSerachOption}
+							onChange={setSearchOption}
 							labelledBy="Select"
 						/>
 					</div>
@@ -86,13 +120,15 @@ const DashBoard = () => {
 							type="text"
 							id="searchValue"
 							placeholder="Search..."
-							onKeyUp={setSearchFilter}
+							onChange={(e) => {
+								changeSearchValue(e);
+							}}
 						/>
 					</div>
 				</div>
 			</header>
 			<div className={styles.table}>
-				<BanksList banks={bankLists}></BanksList>
+				<BanksList banks={currentBanks}></BanksList>
 			</div>
 		</main>
 	);
