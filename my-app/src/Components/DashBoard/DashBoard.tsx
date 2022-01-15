@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import styles from "./DashBoard.module.css";
 import { MultiSelect } from "react-multi-select-component";
+import BanksList from "../BanksList/BanksList";
 
 const DashBoard = () => {
 	const [city, setCity] = useState("MUMBAI");
@@ -25,9 +26,13 @@ const DashBoard = () => {
 		},
 	];
 
+	useEffect(() => {
+		console.log(city);
+		fetchBanks(city);
+	}, [city]);
+
 	const changeOption = (e: any) => {
 		setCity(e.target.value);
-		fetchBanks(city);
 	};
 	const fetchBanks = (city: string) => {
 		fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + city)
@@ -86,6 +91,9 @@ const DashBoard = () => {
 					</div>
 				</div>
 			</header>
+			<div className={styles.table}>
+				<BanksList banks={bankLists}></BanksList>
+			</div>
 		</main>
 	);
 };
