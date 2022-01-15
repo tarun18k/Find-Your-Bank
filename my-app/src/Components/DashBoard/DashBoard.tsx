@@ -3,17 +3,18 @@ import { Form } from "react-bootstrap";
 import styles from "./DashBoard.module.css";
 import { MultiSelect } from "react-multi-select-component";
 import BanksList from "../BanksList/BanksList";
+import Loader from "../Loader/Loader";
+import { BankService } from "../../Services/BankService";
 
 const DashBoard = () => {
 	const [city, setCity] = useState("MUMBAI");
 	const options = ["MUMBAI", "DELHI", "BANGALORE", "ALIGARH", "HYDERABAD"];
 	const [bankLists, setBankLists] = useState([]);
 	const [error, setError] = useState(null);
-	const [isLoaded, setIsLoaded] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [searchOption, setSearchOption] = useState([]);
 	const [currentBanks, setCurrentBanks] = useState([]);
 	const [searchValue, setSearchValue] = useState("");
-	var cityChanged = true;
 	const searchOptions = [
 		{
 			label: "IFSC",
@@ -46,19 +47,17 @@ const DashBoard = () => {
 	};
 
 	const fetchBanks = (city: string) => {
-		console.log(city);
-		fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + city)
-			.then((res) => res.json())
-			.then(
-				(data) => {
-					setIsLoaded(true);
-					setBankLists(data);
-				},
-				(error) => {
-					setIsLoaded(true);
-					setError(error);
-				}
-			);
+		setIsLoading(true);
+		BankService.getBanks(city).then(
+			(data) => {
+				setIsLoading(false);
+				setBankLists(data);
+			},
+			(error) => {
+				setIsLoading(false);
+				setError(error);
+			}
+		);
 	};
 
 	useEffect(() => {
@@ -87,50 +86,61 @@ const DashBoard = () => {
 	};
 
 	return (
-		<main className={styles.DashBoard}>
-			<header className={styles.flex}>
-				<div className="Heading"> Find Your Bank</div>
-				<div className={styles.flex}>
-					<div className="cityFilter">
-						<label id="city">Select City</label>
-						<Form.Select
-							aria-label="Default select example"
-							onChange={(e) => {
-								changeOption(e);
-							}}>
-							{options.map((city: string) => (
-								<option value={city}>{city}</option>
-							))}
-						</Form.Select>
+		<>
+			<main className={styles.DashBoard}>
+				<header className={styles.flex}>
+					<div className="Heading"> Find Your Bank</div>
+					<div className={styles.flex}>
+						<div className="cityFilter">
+							<label id="city">Select City</label>
+							<Form.Select
+								aria-label="Default select example"
+								onChange={(e) => {
+									changeOption(e);
+								}}>
+								{options.map((city: string) => (
+									<option value={city}>
+										{city}
+									</option>
+								))}
+							</Form.Select>
+						</div>
+						<div className="searchFilter">
+							<label id="searchOptions">
+								Select Search Options
+							</label>
+							<MultiSelect
+								options={searchOptions}
+								value={searchOption}
+								onChange={setSearchOption}
+								labelledBy="Select"
+							/>
+						</div>
+						<div className={styles.searchDiv}>
+							<label className="searchValue">
+								{" "}
+								Search{" "}
+							</label>
+							<input
+								type="text"
+								id="searchValue"
+								placeholder="Search..."
+								onChange={(e) => {
+									changeSearchValue(e);
+								}}
+							/>
+						</div>
 					</div>
-					<div className="searchFilter">
-						<label id="searchOptions">
-							Select Search Options
-						</label>
-						<MultiSelect
-							options={searchOptions}
-							value={searchOption}
-							onChange={setSearchOption}
-							labelledBy="Select"
-						/>
+				</header>
+				{isLoading === true ? (
+					<Loader />
+				) : (
+					<div className={styles.table}>
+						<BanksList banks={currentBanks}></BanksList>
 					</div>
-					<div className={styles.searchDiv}>
-						<label className="searchValue"> Search </label>
-						<input
-							type="text"
-							id="searchValue"
-							placeholder="Search..."
-							onChange={(e) => {
-								changeSearchValue(e);
-							}}
-						/>
-					</div>
-				</div>
-			</header>
-			<div className={styles.table}>
-				<BanksList banks={currentBanks}></BanksList>
-			</div>
-		</main>
+				)}
+			</main>
+		</>
 	);
 };
 
