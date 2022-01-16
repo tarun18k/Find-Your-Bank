@@ -8,3 +8,12 @@ export interface BankDetails {
 	state: string;
 	bank_name: string;
 }
+
+export interface Fields {
+	city: string;
+	data: any;
+}
+export interface Cache {
+	currentCity: string;
+	fields: Fields[];
+}

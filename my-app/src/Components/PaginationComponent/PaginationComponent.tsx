@@ -1,10 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
-interface PaginationProps {
-	pageCount: number;
-	activePage: number;
-	changePageNumber: (activePage: number) => void;
-}
+import { PaginationProps } from "../../Models/Props";
+
 const PaginationComponent: FC<PaginationProps> = (props) => {
 
 	const [pageNumbers, setPageNumbers] = useState<number[]>([]);

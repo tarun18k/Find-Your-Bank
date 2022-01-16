@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import BankDetails from "./Components/BankDetails/BankDetails";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DashBoard from "./Components/DashBoard/DashBoard";
-
 function App() {
 	return (
 		<div className="App">

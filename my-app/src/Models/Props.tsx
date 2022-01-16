@@ -6,3 +6,8 @@ export interface BanksListProps {
 export interface BankDetailsProps {
 	bank: BankDetails;
 }
+export interface PaginationProps {
+	pageCount: number;
+	activePage: number;
+	changePageNumber: (activePage: number) => void;
+}

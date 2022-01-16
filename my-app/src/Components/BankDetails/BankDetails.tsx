@@ -12,12 +12,14 @@ const BankDetails = () => {
 	};
 
 	return (
-		<div>
-			<h2>BANK DETAILS</h2>{" "}
-			<Button onClick={goToDashboard} variant="primary">
-				Go To DashBoard
-			</Button>
-			<div className={styles.BankDetailsCard}>
+		<div className={ styles.Main }>
+			<div className={ styles.flex }>
+				<h2>BANK DETAILS</h2>
+				<Button onClick={ goToDashboard } variant="primary">
+					Go To DashBoard
+				</Button>
+			</div>
+			<div className={ styles.BankDetailsCard }>
 				<Table striped bordered hover>
 					<thead>
 						<tr>
@@ -26,12 +28,12 @@ const BankDetails = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{headerKeys.map((key: any, index) => (
-							<tr key={index}>
-								<td key={key}>{key}</td>
-								<td key={index + key}>{bank[key]}</td>
+						{ headerKeys.map((key: any, index) => (
+							<tr key={ index }>
+								<td key={ key }>{ key }</td>
+								<td key={ index + key }>{ bank[key] }</td>
 							</tr>
-						))}
+						)) }
 					</tbody>
 				</Table>
 			</div>

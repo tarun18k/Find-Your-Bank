@@ -1,1 +1,13 @@
-.BankDetails {}
+.BankDetailsCard {
+	width: 50%;
+	margin-top: 1rem;
+}
+.Main {
+	padding: 1rem;
+}
+.flex {
+	width: 50%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}

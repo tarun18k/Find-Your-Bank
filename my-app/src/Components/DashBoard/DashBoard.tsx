@@ -5,9 +5,13 @@ import { MultiSelect } from "react-multi-select-component";
 import BanksList from "../BanksList/BanksList";
 import Loader from "../Loader/Loader";
 import { BankService } from "../../Services/BankService";
-
+import { Cache } from "../../Models/BankDetailsInterface";
+const CACHE: Cache = {
+	currentCity: 'MUMBAI',
+	fields: []
+};
 const DashBoard = () => {
-	const [city, setCity] = useState("MUMBAI");
+	const [city, setCity] = useState(CACHE.currentCity);
 	const options = ["MUMBAI", "DELHI", "BANGALORE", "ALIGARH", "HYDERABAD"];
 	const [bankLists, setBankLists] = useState([]);
 	const [error, setError] = useState(null);
@@ -31,7 +35,18 @@ const DashBoard = () => {
 	];
 
 	useEffect(() => {
-		fetchBanks(city);
+		console.log(CACHE.fields, city)
+		if (CACHE.fields.find(obj => {
+			return obj.city === city;
+		})) {
+			const details = CACHE.fields.find(obj => {
+				return obj.city === city;
+			})
+			setBankLists(details?.data);
+			setIsLoading(false);
+		} else {
+			fetchBanks(city);
+		}
 	}, [city]);
 
 	useEffect(() => {
@@ -40,6 +55,7 @@ const DashBoard = () => {
 
 	const changeOption = (e: any) => {
 		setCity(e.target.value);
+		CACHE.currentCity = e.target.value;
 	};
 
 	const changeSearchValue = (e: any) => {
@@ -52,6 +68,7 @@ const DashBoard = () => {
 			(data) => {
 				setIsLoading(false);
 				setBankLists(data);
+				CACHE.fields.push({ city: city, data: data });
 			},
 			(error) => {
 				setIsLoading(false);
@@ -85,25 +102,26 @@ const DashBoard = () => {
 
 	return (
 		<>
-			<main className={styles.DashBoard}>
-				<header className={styles.flex}>
-					<div className={styles.Heading}>
-						{" "}
+			<main className={ styles.DashBoard }>
+				<header className={ styles.flex }>
+					<div className={ styles.Heading }>
+						{ " " }
 						<h2>Find Your Bank</h2>
 					</div>
-					<div className={styles.flex}>
+					<div className={ styles.flex }>
 						<div className="cityFilter">
 							<label id="city">SelectCity</label>
 							<Form.Select
 								aria-label="Default select example"
-								onChange={(e) => {
+								value={ city }
+								onChange={ (e) => {
 									changeOption(e);
-								}}>
-								{options.map((city: string) => (
-									<option value={city}>
-										{city}
+								} }>
+								{ options.map((city: string) => (
+									<option value={ city }>
+										{ city }
 									</option>
-								))}
+								)) }
 							</Form.Select>
 						</div>
 						<div className="searchFilter">
@@ -111,36 +129,36 @@ const DashBoard = () => {
 								SelectSearchOptions
 							</label>
 							<MultiSelect
-								options={searchOptions}
-								value={searchOption}
-								onChange={setSearchOption}
+								options={ searchOptions }
+								value={ searchOption }
+								onChange={ setSearchOption }
 								labelledBy="Select"
 							/>
 						</div>
-						<div className={styles.searchDiv}>
+						<div className={ styles.searchDiv }>
 							<label className="searchValue">
-								{" "}
-								Search{" "}
+								{ " " }
+								Search{ " " }
 							</label>
 							<input
-								className={styles.searchInput}
+								className={ styles.searchInput }
 								type="text"
 								id="searchValue"
 								placeholder="Search..."
-								onChange={(e) => {
+								onChange={ (e) => {
 									changeSearchValue(e);
-								}}
+								} }
 							/>
 						</div>
 					</div>
 				</header>
-				{isLoading === true ? (
+				{ isLoading === true ? (
 					<Loader />
 				) : (
-					<div className={styles.table}>
-						<BanksList banks={currentBanks}></BanksList>
+					<div className={ styles.table }>
+						<BanksList banks={ currentBanks }></BanksList>
 					</div>
-				)}
+				) }
 			</main>
 		</>
 	);

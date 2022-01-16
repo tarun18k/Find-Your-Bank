@@ -34,45 +34,47 @@ const BanksList: React.FC<BanksListProps> = ({ banks }: BanksListProps) => {
 
 	return (
 		<div>
-			{paginatedRecords.length === 0 && <h2>No Data Found</h2>}
-			<Table striped bordered hover responsive="md" variant="dark">
+			{ paginatedRecords.length === 0 && <h2>No Data Found</h2> }
+			<Table striped bordered hover responsive="md" >
 				<thead>
 					<tr>
-						{headerKeys.map((key: string) => (
-							<th key={key}>{key.toLocaleUpperCase()}</th>
-						))}
+						{ headerKeys.map((key: string) => (
+							<th key={ key }>{ key.toLocaleUpperCase() }</th>
+						)) }
 					</tr>
 				</thead>
 				<tbody>
-					{paginatedRecords.map((bank: any, index: number) => (
+					{ paginatedRecords.map((bank: any, index: number) => (
 						<tr
-							onClick={() => goToBank(bank["ifsc"], bank)}
-							key={index}>
-							{headerKeys.map((key: string, index) =>
+							onClick={ () => goToBank(bank["ifsc"], bank) }
+							key={ index }>
+							{ headerKeys.map((key: string, index) =>
 								key === "address" ? (
 									<td
-										key={index + key}
-										className={styles.address}
-										style={{
+										key={ index + key }
+										className={ styles.address }
+										style={ {
 											width: "150px",
-										}}>
-										{bank[headerKeys[index]]}
+										} }>
+										{ bank[headerKeys[index]] }
 									</td>
 								) : (
-									<td key={index + key}>
-										{bank[headerKeys[index]]}
+									<td key={ index + key }>
+										{ bank[headerKeys[index]] }
 									</td>
 								)
-							)}
+							) }
 						</tr>
-					))}
+					)) }
 				</tbody>
 			</Table>
-			<PaginationComponent
-				pageCount={pageCount}
-				changePageNumber={changePageNumber}
-				activePage={activePage}
-			/>
+			<div className={ styles.LeftAlign }>
+				<PaginationComponent
+					pageCount={ pageCount }
+					changePageNumber={ changePageNumber }
+					activePage={ activePage }
+				/>
+			</div>
 		</div>
 	);
 };
