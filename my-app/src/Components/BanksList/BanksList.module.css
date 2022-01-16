@@ -1,8 +1,18 @@
-.address {
-	width: 6rem;
-}
-.LeftAlign {
+.leftAlign {
 	display: flex;
 	justify-content: flex-end;
 	text-align: left;
+}
+
+.noDataFound {
+	margin-top: 2rem;
+	text-align: center;
+}
+
+.cell {
+	overflow-wrap: break-word;
+}
+
+.pointer {
+	cursor: pointer;
 }

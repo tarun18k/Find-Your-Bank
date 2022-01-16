@@ -6,36 +6,27 @@ import BanksList from "../BanksList/BanksList";
 import Loader from "../Loader/Loader";
 import { BankService } from "../../Services/BankService";
 import { Cache } from "../../Models/BankDetailsInterface";
+import Badge from 'react-bootstrap/Badge'
+import { CITY_OPTIONS, SEARCH_OPTIONS } from "../../Utils/constants";
+
 const CACHE: Cache = {
 	currentCity: 'MUMBAI',
 	fields: []
 };
+
 const DashBoard = () => {
+	const options = CITY_OPTIONS;
+	const searchOptions = SEARCH_OPTIONS;
+
 	const [city, setCity] = useState(CACHE.currentCity);
-	const options = ["MUMBAI", "DELHI", "BANGALORE", "ALIGARH", "HYDERABAD"];
 	const [bankLists, setBankLists] = useState([]);
-	const [error, setError] = useState(null);
+	const [error, setError] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchOption, setSearchOption] = useState([]);
 	const [currentBanks, setCurrentBanks] = useState([]);
 	const [searchValue, setSearchValue] = useState("");
-	const searchOptions = [
-		{
-			label: "IFSC",
-			value: "ifsc",
-		},
-		{
-			label: "Branch",
-			value: "branch",
-		},
-		{
-			label: "Bank Name",
-			value: "bank_name",
-		},
-	];
 
 	useEffect(() => {
-		console.log(CACHE.fields, city)
 		if (CACHE.fields.find(obj => {
 			return obj.city === city;
 		})) {
@@ -53,17 +44,37 @@ const DashBoard = () => {
 		setSearchFilter();
 	}, [searchOption, searchValue]);
 
+	useEffect(() => {
+		if (searchOption.length > 0 && searchValue.length > 0) {
+			setSearchFilter();
+		} else {
+			setCurrentBanks(bankLists);
+		}
+	}, [bankLists]);
+
+	/**
+	 * Sets the selected city option
+	 * @param e Change event
+	 */
 	const changeOption = (e: any) => {
 		setCity(e.target.value);
 		CACHE.currentCity = e.target.value;
 	};
 
+	/**
+	 * Sets the search value
+	 */
 	const changeSearchValue = (e: any) => {
 		setSearchValue(e.target.value);
 	};
 
+	/**
+	 * Triggers the API to fetch banks list of selected city
+	 * @param city Selected city
+	 */
 	const fetchBanks = (city: string) => {
 		setIsLoading(true);
+
 		BankService.getBanks(city).then(
 			(data) => {
 				setIsLoading(false);
@@ -77,41 +88,53 @@ const DashBoard = () => {
 		);
 	};
 
-	useEffect(() => {
-		if (searchOption.length > 0 && searchValue.length > 0) {
-			setSearchFilter();
-		} else {
-			setCurrentBanks(bankLists);
+	/**
+	 * Disable or enable search bar based on search options filter
+	 * @returns condition of disable
+	 */
+	const isDisabledSearch = () => {
+		if (searchOption.length === 0) {
+			return true;
 		}
-	}, [bankLists]);
+		return false;
+	}
 
+	/**
+	 * Sets the filtered banks based on the search options and search value
+	 */
 	const setSearchFilter = () => {
 		var result: any = [];
-		bankLists.forEach((bank) => {
-			searchOptions.forEach((searchKey: any) => {
-				if (bank[searchKey.value] === searchValue) {
-					result.push(bank);
-				}
-			});
+
+		const lowerCasedInput = searchValue.toLowerCase();
+
+		result = bankLists.filter(item => {
+			return searchOption.some((key: any) => {
+				const regex = new RegExp(`^${lowerCasedInput.trim()}`, 'i');
+				return regex.test(item[key.value]);
+			}
+			);
 		});
+
 		if (searchOption.length === 0 || searchValue.length === 0) {
 			result = bankLists;
 		}
+
 		setCurrentBanks(result);
 	};
 
+
 	return (
 		<>
-			<main className={ styles.DashBoard }>
+			<main className={ styles.dashBoard }>
 				<header className={ styles.flex }>
-					<div className={ styles.Heading }>
-						{ " " }
-						<h2>Find Your Bank</h2>
+					<div>
+						<h1><Badge bg="secondary">Find Your Bank</Badge></h1>
 					</div>
 					<div className={ styles.flex }>
 						<div className="cityFilter">
-							<label id="city">SelectCity</label>
+							<label id="city">City</label>
 							<Form.Select
+								className={ styles.width }
 								aria-label="Default select example"
 								value={ city }
 								onChange={ (e) => {
@@ -126,9 +149,10 @@ const DashBoard = () => {
 						</div>
 						<div className="searchFilter">
 							<label id="searchOptions">
-								SelectSearchOptions
+								Search Options
 							</label>
 							<MultiSelect
+								className={ styles.width }
 								options={ searchOptions }
 								value={ searchOption }
 								onChange={ setSearchOption }
@@ -145,6 +169,7 @@ const DashBoard = () => {
 								type="text"
 								id="searchValue"
 								placeholder="Search..."
+								disabled={ isDisabledSearch() }
 								onChange={ (e) => {
 									changeSearchValue(e);
 								} }
@@ -152,12 +177,15 @@ const DashBoard = () => {
 						</div>
 					</div>
 				</header>
+
 				{ isLoading === true ? (
 					<Loader />
 				) : (
-					<div className={ styles.table }>
-						<BanksList banks={ currentBanks }></BanksList>
-					</div>
+					error === '' ? (
+						<div className={ styles.table }>
+							<BanksList banks={ currentBanks }></BanksList>
+						</div>) :
+						(<div className={ styles.noDataFound }><h2>{ error }</h2></div>)
 				) }
 			</main>
 		</>

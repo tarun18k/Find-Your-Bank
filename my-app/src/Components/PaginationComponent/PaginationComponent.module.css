@@ -1,1 +1,6 @@
-.PaginationComponent {}
+.currentPage {
+	z-index: 3;
+	color: black;
+	background-color: #eeeeee;
+	border-color: black;
+}

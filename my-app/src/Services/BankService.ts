@@ -1,4 +1,9 @@
 export const BankService = {
+	/**
+	 * Gets the banks list data
+	 * @param city Selected city
+	 * @returns Promise to get banks
+	 */
 	getBanks: (city: string) => {
 		return fetch(
 			`https://vast-shore-74260.herokuapp.com/banks?city=${city}`

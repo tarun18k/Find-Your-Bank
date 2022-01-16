@@ -1,13 +1,22 @@
-.BankDetailsCard {
-	width: 50%;
+.bankDetailsCard {
 	margin-top: 1rem;
 }
-.Main {
-	padding: 1rem;
+
+.mainContainer {
+	padding: 1rem 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f8f8f8;
+	min-height: 100vh;
 }
+
 .flex {
-	width: 50%;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+}
+
+.main {
+	width: 80%;
 }

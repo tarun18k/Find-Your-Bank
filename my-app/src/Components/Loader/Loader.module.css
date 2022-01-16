@@ -1,4 +1,4 @@
-.Loader {
+.loader {
 	position: fixed;
 	display: block;
 	width: 100%;
@@ -8,6 +8,7 @@
 	background-color: rgba(74, 74, 74, 0.8);
 	z-index: 11021;
 }
+
 .spinnerCustom {
 	position: absolute;
 	top: 50%;

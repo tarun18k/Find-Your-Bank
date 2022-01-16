@@ -10,6 +10,9 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 		setPages();
 	}, [props.pageCount]);
 
+	/**
+	 * Sets the array of pages for paginator
+	 */
 	const setPages = () => {
 		if (props.pageCount > 0) {
 			const pages: number[] = [];
@@ -23,42 +26,58 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 				}
 			}
 			setPageNumbers(pages);
+		} else {
+			setPageNumbers([]);
 		}
 	};
 
+	/**
+	 * Emits the event to parent to set the active page
+	 * @param page Selected page
+	 */
 	const onPageChange = (page: number) => {
 		props.changePageNumber(page);
 	};
 
+	/**
+	 * Sets the page to next page and emits event to parent
+	 */
 	const onNextPage = () => {
 		if (props.activePage + 1 <= props.pageCount) {
 			if (props.activePage + 1 > pageNumbers[pageNumbers.length - 1]) {
 				let pages = pageNumbers;
 				pages = pages.map((page: number) => page + 1);
-				console.log(pages);
 				setPageNumbers(pages);
 			}
 			props.changePageNumber(props.activePage + 1);
 		}
 	};
 
+	/**
+	 * Sets the page to previous page and emits event to parent
+	 */
 	const onPreviousPage = () => {
 		if (props.activePage - 1 >= 0) {
 			if (props.activePage - 1 < pageNumbers[0]) {
 				let pages = pageNumbers;
 				pages = pages.map((page: number) => page - 1);
-				console.log(pages);
 				setPageNumbers(pages);
 			}
 			props.changePageNumber(props.activePage - 1);
 		}
 	};
 
+	/**
+	 * Sets the page to first page and emits event to parent
+	 */
 	const onFirstPage = () => {
 		setPages();
 		props.changePageNumber(1);
 	};
 
+	/**
+	 * Sets the page to last page and emits event to parent
+	 */
 	const onLastPage = () => {
 		let count = props.pageCount;
 		if (count > 5) {
@@ -80,6 +99,7 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 			{ props.pageCount > 5 && (
 				<Pagination.Prev onClick={ onPreviousPage } />
 			) }
+
 			{ pageNumbers.map((item: number) => (
 				<Pagination.Item
 					key={ item }
@@ -90,6 +110,7 @@ const PaginationComponent: FC<PaginationProps> = (props) => {
 					{ item }
 				</Pagination.Item>
 			)) }
+
 			{ props.pageCount > 5 && <Pagination.Next onClick={ onNextPage } /> }
 			{ props.pageCount > 5 && <Pagination.Last onClick={ onLastPage } /> }
 		</Pagination>
