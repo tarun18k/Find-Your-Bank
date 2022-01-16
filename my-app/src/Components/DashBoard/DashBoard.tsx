@@ -118,7 +118,7 @@ const DashBoard = () => {
 									changeOption(e);
 								} }>
 								{ options.map((city: string) => (
-									<option value={ city }>
+									<option key={ city } value={ city }>
 										{ city }
 									</option>
 								)) }
